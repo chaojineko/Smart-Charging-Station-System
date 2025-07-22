@@ -1,0 +1,9 @@
+{
+    "files.associations": {
+        "lv_demos.h": "c",
+        "lv_sdl_window.h": "c"
+    },
+    "C_Cpp.default.compilerPath": "/usr/bin/gcc",
+    "cmake.cmakePath": "/usr/bin/cmake",
+    "cmake.configureOnOpen": true
+}

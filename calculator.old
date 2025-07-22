@@ -1,0 +1,305 @@
+#include "lvgl/lvgl.h"
+#include "lvgl/demos/lv_demos.h"
+#include <unistd.h>
+#include <pthread.h>
+#include <time.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+// 简单的计算器表达式求值函数
+static double evaluate_expression(const char * expr)
+{
+    char * expression     = strdup(expr); // 创建副本以便修改
+    char * pos            = expression;   // 指向当前解析位置
+    double result         = 0;            // 结果初始化为0
+    double current_number = 0;            // 当前数字初始化为0
+    char operation        = '+';          // 初始操作符
+
+    // 移除所有空格
+    char * write_pos = expression;                             // 写入位置
+    for(char * read_pos = expression; *read_pos; read_pos++) { // 读取每个字符
+        if(*read_pos != ' ') {
+            *write_pos++ = *read_pos; // 如果不是空格，则写入到新的位置
+        }
+    }
+    *write_pos = '\0'; // 结束字符串
+
+    pos = expression;
+
+    while(*pos) {
+        if(isdigit(*pos) || *pos == '.') { // 如果是数字或小数点
+            // 解析数字
+            current_number = strtod(pos, &pos);                               // 将字符串转换为双精度浮点数
+        } else if(*pos == '+' || *pos == '-' || *pos == '*' || *pos == '/') { // 如果是运算符
+            // 执行之前的操作
+            switch(operation) { // 根据当前操作符执行相应的计算
+                case '+': result += current_number; break;
+                case '-': result -= current_number; break;
+                case '*': result *= current_number; break;
+                case '/':
+                    if(current_number != 0) {
+                        result /= current_number;
+                    } else {
+                        free(expression);
+                        return 0; // 除零错误
+                    }
+                    break;
+            }
+            operation = *pos; // 更新操作符
+            pos++;
+        } else {
+            pos++; // 跳过无效字符
+        }
+    }
+
+    // 执行最后一个操作
+    switch(operation) {
+        case '+': result += current_number; break;
+        case '-': result -= current_number; break;
+        case '*': result *= current_number; break;
+        case '/':
+            if(current_number != 0) {
+                result /= current_number;
+            } else {
+                free(expression);
+                return 0; // 除零错误
+            }
+            break;
+    }
+
+    free(expression);
+    return result;
+}
+
+// 格式化结果，移除不必要的小数点
+static void format_result(double result, char * buffer, size_t buffer_size)
+{
+    if(result == (int)result) {
+        // 如果是整数，不显示小数点
+        snprintf(buffer, buffer_size, "%.0f", result);
+    } else {
+        // 显示小数，最多6位
+        snprintf(buffer, buffer_size, "%.6f", result);
+        // 移除末尾的零
+        char * end = buffer + strlen(buffer) - 1;
+        while(end > buffer && *end == '0') {
+            *end = '\0';
+            end--;
+        }
+        if(end > buffer && *end == '.') {
+            *end = '\0';
+        }
+    }
+}
+
+static const char * getenv_default(const char * name, const char * dflt)
+{
+    const char * value = getenv(name);
+    return value ? value : dflt;
+}
+
+#if LV_USE_LINUX_FBDEV
+static void lv_linux_disp_init(void)
+{
+
+    const char * device = getenv_default("LV_LINUX_FBDEV_DEVICE", "/dev/fb0");
+    lv_display_t * disp = lv_linux_fbdev_create();
+
+    lv_linux_fbdev_set_file(disp, device);
+}
+#elif LV_USE_LINUX_DRM
+static void lv_linux_disp_init(void)
+{
+    const char * device = getenv_default("LV_LINUX_DRM_CARD", "/dev/dri/card0");
+    lv_display_t * disp = lv_linux_drm_create();
+
+    lv_linux_drm_set_file(disp, device, -1);
+}
+#elif LV_USE_SDL
+static void lv_linux_disp_init(void)
+{
+    const int width  = atoi(getenv("LV_SDL_VIDEO_WIDTH") ?: "800");
+    const int height = atoi(getenv("LV_SDL_VIDEO_HEIGHT") ?: "480");
+
+    lv_sdl_window_create(width, height);
+}
+#else
+#error Unsupported configuration
+#endif
+
+// 检查是否可以输入运算符
+static bool can_add_operator(const char * text, const char * new_operator)
+{
+    if(strlen(text) == 0) {
+        // 空字符串不能以运算符开头（除了减号）
+        return strcmp(new_operator, "-") == 0;
+    }
+
+    char last_char = text[strlen(text) - 1];
+
+    // 如果最后一个字符已经是运算符，不能再添加运算符
+    if(last_char == '+' || last_char == '-' || last_char == '*' || last_char == '/') {
+        return false;
+    }
+
+    // 如果最后一个字符是小数点，不能添加运算符
+    if(last_char == '.') {
+        return false;
+    }
+
+    return true;
+}
+
+// 检查是否可以输入小数点
+static bool can_add_decimal(const char * text)
+{
+    if(strlen(text) == 0) {
+        return true; // 可以以小数点开头，如 .5
+    }
+
+    // 查找最后一个运算符的位置
+    int last_operator_pos = -1;
+    for(int i = strlen(text) - 1; i >= 0; i--) {
+        if(text[i] == '+' || text[i] == '-' || text[i] == '*' || text[i] == '/') {
+            last_operator_pos = i;
+            break;
+        }
+    }
+
+    // 检查当前数字中是否已经有小数点
+    const char * current_number = (last_operator_pos == -1) ? text : &text[last_operator_pos + 1];
+
+    for(int i = 0; current_number[i]; i++) {
+        if(current_number[i] == '.') {
+            return false; // 当前数字已有小数点
+        }
+    }
+
+    return true;
+}
+
+// 计算器键盘事件处理函数
+static void calc_event_cb(lv_event_t * e)
+{
+    lv_event_code_t code = lv_event_get_code(e);
+    lv_obj_t * ta        = lv_event_get_user_data(e);
+    lv_obj_t * btnm      = lv_event_get_target(e);
+
+    if(code == LV_EVENT_VALUE_CHANGED) {
+        const char * txt          = lv_btnmatrix_get_btn_text(btnm, lv_btnmatrix_get_selected_btn(btnm));
+        const char * current_text = lv_textarea_get_text(ta);
+
+        if(strcmp(txt, "C") == 0) {
+            lv_textarea_set_text(ta, "");
+        } else if(strcmp(txt, "=") == 0) {
+            // 执行计算
+            if(strlen(current_text) > 0) {
+                double result = evaluate_expression(current_text);
+                char result_str[64];
+                format_result(result, result_str, sizeof(result_str));
+                lv_textarea_set_text(ta, result_str);
+                printf("计算表达式: %s = %s\n", current_text, result_str);
+            }
+        } else if(strcmp(txt, LV_SYMBOL_BACKSPACE) == 0) {
+            lv_textarea_delete_char(ta);
+        } else if(strcmp(txt, LV_SYMBOL_OK) == 0) {
+            // 确认按钮 - 也可以执行计算
+            if(strlen(current_text) > 0) {
+                double result = evaluate_expression(current_text);
+                char result_str[64];
+                format_result(result, result_str, sizeof(result_str));
+                lv_textarea_set_text(ta, result_str);
+                printf("确认计算: %s = %s\n", current_text, result_str);
+            }
+        } else if(strcmp(txt, ".") == 0) {
+            // 检查是否可以添加小数点
+            if(can_add_decimal(current_text)) {
+                lv_textarea_add_text(ta, txt);
+            }
+        } else if(strcmp(txt, "+") == 0 || strcmp(txt, "-") == 0 || strcmp(txt, "*") == 0 || strcmp(txt, "/") == 0) {
+            // 检查是否可以添加运算符
+            if(can_add_operator(current_text, txt)) {
+                lv_textarea_add_text(ta, txt);
+            }
+        } else {
+            // 数字输入
+            lv_textarea_add_text(ta, txt);
+        }
+    }
+}
+
+// 这个函数是用来处理文本区域的事件回调函数
+static void ta_event_cb(lv_event_t * e)
+{
+    lv_event_code_t code = lv_event_get_code(e);      // 获取事件代码
+    lv_obj_t * ta        = lv_event_get_target(e);    // 获取事件目标对象
+    lv_obj_t * kb        = lv_event_get_user_data(e); // 获取事件用户数据，这里是键盘对象
+    if(code == LV_EVENT_FOCUSED) {                    // 如果文本区域获得焦点
+        lv_keyboard_set_textarea(kb, ta);
+        lv_obj_remove_flag(kb, LV_OBJ_FLAG_HIDDEN);
+    }
+
+    if(code == LV_EVENT_DEFOCUSED) { // 如果文本区域失去焦点
+        lv_keyboard_set_textarea(kb, NULL);
+        lv_obj_add_flag(kb, LV_OBJ_FLAG_HIDDEN); // 隐藏键盘
+    }
+}
+
+// 键盘示例
+void lv_example_keyboard(void)
+{
+    /*Create a keyboard to use it with an of the text areas*/
+    lv_obj_t * kb = lv_keyboard_create(lv_screen_active()); // 创建一个键盘
+    lv_keyboard_set_mode(kb, LV_KEYBOARD_MODE_NUMBER);      // 设置键盘为数字模式
+
+    /*Create a text area. The keyboard will write here*/
+    lv_obj_t * ta1;                                      // 创建一个文本区域
+    ta1 = lv_textarea_create(lv_screen_active());        // 创建一个文本区域
+    lv_obj_align(ta1, LV_ALIGN_TOP_LEFT, 10, 10);        // 对齐文本区域到屏幕左上角
+    lv_textarea_set_placeholder_text(ta1, "Calculator"); // 设置文本区域的占位符文本
+    lv_obj_set_size(ta1, 200, 80);                       // 设置文本区域的大小
+
+    // 允许输入数字、运算符和小数点
+    lv_textarea_set_accepted_chars(ta1, "0123456789+-*/=."); // 限制只能输入数字和运算符
+
+    // 自定义键盘按键映射以支持运算符
+    static const char * kb_map[] = {"1",  "2",          "3",  "+", "\n", "4",  "5",
+                                    "6",  "-",          "\n", "7", "8",  "9",  "*",
+                                    "\n", "C",          "0",  ".", "/",  "\n", LV_SYMBOL_BACKSPACE,
+                                    "=",  LV_SYMBOL_OK, ""};
+
+    static const lv_btnmatrix_ctrl_t kb_ctrl[] = {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 2};
+
+    lv_keyboard_set_map(kb, LV_KEYBOARD_MODE_NUMBER, kb_map, kb_ctrl);
+
+    // 添加自定义键盘事件处理
+    lv_obj_add_event_cb(kb, calc_event_cb, LV_EVENT_VALUE_CHANGED, ta1);
+
+    // 不要将键盘与文本区域自动关联，避免双重输入
+    // lv_keyboard_set_textarea(kb, ta1); // 注释掉这行
+}
+
+int main(void)
+{
+    lv_init();
+    /*Linux display device init*/
+    lv_linux_disp_init();
+
+    printf("init input\n");
+
+    // init input device//初始化输入设备
+    lv_sdl_mouse_create();      // 创建鼠标输入设备
+    lv_sdl_keyboard_create();   // 创建键盘输入设备
+    lv_sdl_mousewheel_create(); // 创建鼠标滚轮输入设备
+    printf("init input  end\n");
+
+    lv_example_keyboard(); // 调用键盘示例函数
+
+    while(1) {
+        lv_timer_handler();
+        usleep(5000);
+    }
+    return 0;
+}
