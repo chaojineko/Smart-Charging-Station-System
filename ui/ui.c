@@ -6,6 +6,7 @@
 #include "ui.h"
 #include "ui_helpers.h"
 #include "../src/user_auth.h"
+#include "../src/charging_system.h"
 #include <stdio.h>
 
 ///////////////////// VARIABLES ////////////////////
@@ -104,6 +105,7 @@ void ui_Screen5_screen_init(void);
 lv_obj_t * ui_Screen5;
 lv_obj_t * ui_Image8;
 lv_obj_t * ui_Label9;
+// 余额查询按钮
 void ui_event_Button5(lv_event_t * e);
 lv_obj_t * ui_Button5;
 lv_obj_t * ui_Label16;
@@ -380,6 +382,8 @@ void ui_event_Button6(lv_event_t * e)
         auth_result_t result = user_login(username, password, USER_TYPE_CUSTOMER);
 
         if(result == AUTH_SUCCESS) {
+            // 设置当前用户
+            set_current_user(username, USER_TYPE_CUSTOMER);
             // 登录成功，跳转到用户选择界面
             _ui_screen_change(&ui_Screen5, LV_SCR_LOAD_ANIM_FADE_ON, 400, 0, &ui_Screen5_screen_init);
         } else {
@@ -439,15 +443,14 @@ void ui_event_Button7(lv_event_t * e)
         _ui_screen_change(&ui_Screen3, LV_SCR_LOAD_ANIM_FADE_ON, 400, 0, &ui_Screen3_screen_init);
     }
 }
-void ui_event_Button32(lv_event_t * e)
+// 注册成功后的回调函数
+static void register_success_callback(lv_timer_t * timer)
 {
-    lv_event_code_t event_code = lv_event_get_code(e);
-    lv_obj_t * target          = lv_event_get_target(e);
-    if(event_code == LV_EVENT_CLICKED) {
-        _ui_flag_modify(ui_Container13, LV_OBJ_FLAG_HIDDEN, _UI_MODIFY_FLAG_REMOVE);
-    }
+    _ui_screen_change(&ui_Screen1, LV_SCR_LOAD_ANIM_FADE_ON, 500, 0, &ui_Screen1_screen_init);
+    lv_timer_del(timer);
 }
-void ui_event_Button37(lv_event_t * e)
+
+void ui_event_Button32(lv_event_t * e)
 {
     lv_event_code_t event_code = lv_event_get_code(e);
     lv_obj_t * target          = lv_event_get_target(e);
@@ -459,6 +462,8 @@ void ui_event_Button37(lv_event_t * e)
         // 检查输入是否为空
         if(!username || !password || strlen(username) == 0 || strlen(password) == 0) {
             lv_label_set_text(ui_Label68, "请输入账号和密码!");
+            // 使用自定义中文字体
+            lv_obj_set_style_text_font(ui_Label68, &ui_font_chinese48title, LV_PART_MAIN | LV_STATE_DEFAULT);
             _ui_flag_modify(ui_Container13, LV_OBJ_FLAG_HIDDEN, _UI_MODIFY_FLAG_REMOVE);
             printf("注册失败: 账号或密码为空\n");
             return;
@@ -468,16 +473,37 @@ void ui_event_Button37(lv_event_t * e)
         bool success = user_register(username, password, USER_TYPE_CUSTOMER);
 
         if(success) {
-            // 注册成功
-            lv_label_set_text(ui_Label68, "注册成功!");
+            // 注册成功，延时后返回登录界面
+            lv_label_set_text(ui_Label68, "注册成功! 即将返回登录界面...");
+            // 使用自定义中文字体
+            lv_obj_set_style_text_font(ui_Label68, &ui_font_chinese48title, LV_PART_MAIN | LV_STATE_DEFAULT);
             _ui_flag_modify(ui_Container13, LV_OBJ_FLAG_HIDDEN, _UI_MODIFY_FLAG_REMOVE);
             printf("顾客注册成功: %s\n", username);
+
+            // 清空输入框
+            lv_textarea_set_text(ui_TextArea4, "");
+            lv_textarea_set_text(ui_TextArea5, "");
+
+            // 延时1.5秒后返回主界面
+            lv_timer_create(register_success_callback, 1500, NULL);
         } else {
             // 注册失败
             lv_label_set_text(ui_Label68, "用户名已存在!");
+            // 使用自定义中文字体
+            lv_obj_set_style_text_font(ui_Label68, &ui_font_chinese48title, LV_PART_MAIN | LV_STATE_DEFAULT);
             _ui_flag_modify(ui_Container13, LV_OBJ_FLAG_HIDDEN, _UI_MODIFY_FLAG_REMOVE);
             printf("顾客注册失败: 用户名已存在\n");
         }
+    }
+}
+
+void ui_event_Button37(lv_event_t * e)
+{
+    lv_event_code_t event_code = lv_event_get_code(e);
+    lv_obj_t * target          = lv_event_get_target(e);
+    if(event_code == LV_EVENT_CLICKED) {
+        // 这是弹窗中的"上一步"按钮，用于关闭弹窗
+        _ui_flag_modify(ui_Container13, LV_OBJ_FLAG_HIDDEN, _UI_MODIFY_FLAG_ADD);
     }
 }
 void ui_event_Button5(lv_event_t * e)
@@ -485,6 +511,11 @@ void ui_event_Button5(lv_event_t * e)
     lv_event_code_t event_code = lv_event_get_code(e);
     lv_obj_t * target          = lv_event_get_target(e);
     if(event_code == LV_EVENT_CLICKED) {
+        // 刷新当前用户的余额信息
+        refresh_current_user_balance();
+        // 更新余额显示
+        update_balance_display();
+        // 显示余额查询弹窗
         _ui_flag_modify(ui_Container2, LV_OBJ_FLAG_HIDDEN, _UI_MODIFY_FLAG_REMOVE);
     }
 }
@@ -565,8 +596,15 @@ void ui_event_Button17(lv_event_t * e)
     lv_event_code_t event_code = lv_event_get_code(e);
     lv_obj_t * target          = lv_event_get_target(e);
     if(event_code == LV_EVENT_CLICKED) {
-        _ui_flag_modify(ui_Container5, LV_OBJ_FLAG_HIDDEN, _UI_MODIFY_FLAG_ADD);
-        _ui_flag_modify(ui_Container6, LV_OBJ_FLAG_HIDDEN, _UI_MODIFY_FLAG_REMOVE);
+        // 获取当前用户
+        const user_info_t * current = get_current_user();
+        if(current) {
+            // 开始快充
+            if(start_charging(CHARGING_MODE_FAST, current->username)) {
+                _ui_flag_modify(ui_Container5, LV_OBJ_FLAG_HIDDEN, _UI_MODIFY_FLAG_ADD);
+                _ui_flag_modify(ui_Container6, LV_OBJ_FLAG_HIDDEN, _UI_MODIFY_FLAG_REMOVE);
+            }
+        }
     }
 }
 void ui_event_Button20(lv_event_t * e)
@@ -574,8 +612,15 @@ void ui_event_Button20(lv_event_t * e)
     lv_event_code_t event_code = lv_event_get_code(e);
     lv_obj_t * target          = lv_event_get_target(e);
     if(event_code == LV_EVENT_CLICKED) {
-        _ui_flag_modify(ui_Container5, LV_OBJ_FLAG_HIDDEN, _UI_MODIFY_FLAG_ADD);
-        _ui_flag_modify(ui_Container6, LV_OBJ_FLAG_HIDDEN, _UI_MODIFY_FLAG_REMOVE);
+        // 获取当前用户
+        const user_info_t * current = get_current_user();
+        if(current) {
+            // 开始慢充
+            if(start_charging(CHARGING_MODE_SLOW, current->username)) {
+                _ui_flag_modify(ui_Container5, LV_OBJ_FLAG_HIDDEN, _UI_MODIFY_FLAG_ADD);
+                _ui_flag_modify(ui_Container6, LV_OBJ_FLAG_HIDDEN, _UI_MODIFY_FLAG_REMOVE);
+            }
+        }
     }
 }
 void ui_event_Button21(lv_event_t * e)
@@ -583,7 +628,17 @@ void ui_event_Button21(lv_event_t * e)
     lv_event_code_t event_code = lv_event_get_code(e);
     lv_obj_t * target          = lv_event_get_target(e);
     if(event_code == LV_EVENT_CLICKED) {
-        _ui_screen_change(&ui_Screen6, LV_SCR_LOAD_ANIM_FADE_ON, 500, 0, &ui_Screen6_screen_init);
+        // 检查充电状态，确保已经选择了充电模式
+        const charging_data_t * charging = get_charging_data();
+        if(charging && charging->state == CHARGING_STATE_CHARGING) {
+            // 切换到充电界面
+            _ui_screen_change(&ui_Screen6, LV_SCR_LOAD_ANIM_FADE_ON, 500, 0, &ui_Screen6_screen_init);
+            // 开始更新充电显示
+            update_charging_display();
+        } else {
+            // 如果没有选择充电模式，返回选择界面
+            printf("错误: 请先选择充电模式\n");
+        }
     }
 }
 void ui_event_Button22(lv_event_t * e)
@@ -591,6 +646,9 @@ void ui_event_Button22(lv_event_t * e)
     lv_event_code_t event_code = lv_event_get_code(e);
     lv_obj_t * target          = lv_event_get_target(e);
     if(event_code == LV_EVENT_CLICKED) {
+        // 停止充电
+        stop_charging();
+        // 切换到结算界面
         _ui_screen_change(&ui_Screen7, LV_SCR_LOAD_ANIM_FADE_ON, 500, 0, &ui_Screen7_screen_init);
     }
 }
@@ -625,8 +683,49 @@ void ui_event_Image22(lv_event_t * e)
     lv_event_code_t event_code = lv_event_get_code(e);
     lv_obj_t * target          = lv_event_get_target(e);
     if(event_code == LV_EVENT_CLICKED) {
-        _ui_flag_modify(ui_Container8, LV_OBJ_FLAG_HIDDEN, _UI_MODIFY_FLAG_ADD);
-        _ui_flag_modify(ui_Container12, LV_OBJ_FLAG_HIDDEN, _UI_MODIFY_FLAG_REMOVE);
+#include "../src/charging_system.h"
+#include "../src/user_auth.h"
+
+        // 获取充电费用
+        double total_cost = calculate_charging_cost();
+
+        // 获取当前用户余额
+        double current_balance = current_user.balance;
+
+        printf("[DEBUG] Wallet Payment - Total Cost: %.2f, Current Balance: %.2f\n", total_cost, current_balance);
+
+        if(current_balance >= total_cost) {
+            // 余额足够，扣费并显示成功界面
+            if(user_deduct_balance(current_user.username, current_user.type, total_cost)) {
+                // 刷新当前用户余额
+                refresh_current_user_balance();
+                double remaining_balance = current_user.balance;
+
+                // 更新成功界面的显示信息
+                char success_text[256];
+                snprintf(success_text, sizeof(success_text), "扣款成功! \n本次消费:%.2f元\n剩余余额:%.2f元", total_cost,
+                         remaining_balance);
+                lv_label_set_text(ui_Label59, success_text);
+
+                // 隐藏支付方式选择界面，显示扣款成功界面
+                _ui_flag_modify(ui_Container8, LV_OBJ_FLAG_HIDDEN, _UI_MODIFY_FLAG_ADD);
+                _ui_flag_modify(ui_Container12, LV_OBJ_FLAG_HIDDEN, _UI_MODIFY_FLAG_REMOVE);
+
+                printf("[DEBUG] Wallet Payment Success - Cost: %.2f, Remaining: %.2f\n", total_cost, remaining_balance);
+            } else {
+                // 扣费失败，显示余额不足界面
+                _ui_flag_modify(ui_Container8, LV_OBJ_FLAG_HIDDEN, _UI_MODIFY_FLAG_ADD);
+                _ui_flag_modify(ui_Container10, LV_OBJ_FLAG_HIDDEN, _UI_MODIFY_FLAG_REMOVE);
+
+                printf("[DEBUG] Wallet Payment Failed - Balance deduction failed\n");
+            }
+        } else {
+            // 余额不足，显示余额不足界面
+            _ui_flag_modify(ui_Container8, LV_OBJ_FLAG_HIDDEN, _UI_MODIFY_FLAG_ADD);
+            _ui_flag_modify(ui_Container10, LV_OBJ_FLAG_HIDDEN, _UI_MODIFY_FLAG_REMOVE);
+
+            printf("[DEBUG] Insufficient Balance - Cost: %.2f, Balance: %.2f\n", total_cost, current_balance);
+        }
     }
 }
 void ui_event_Button28(lv_event_t * e)
@@ -738,6 +837,8 @@ void ui_event_Button36(lv_event_t * e)
         auth_result_t result = user_login(username, password, USER_TYPE_MERCHANT);
 
         if(result == AUTH_SUCCESS) {
+            // 设置当前用户
+            set_current_user(username, USER_TYPE_MERCHANT);
             // 登录成功，跳转到商家操作界面
             _ui_screen_change(&ui_Screen11, LV_SCR_LOAD_ANIM_FADE_ON, 400, 0, &ui_Screen11_screen_init);
             printf("商家登录成功: %s\n", username);

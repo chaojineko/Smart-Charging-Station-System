@@ -4,23 +4,25 @@
 // Project name: SquareLine_Project
 
 #include "../ui.h"
+#include "../../src/charging_system.h"
+#include <stdio.h>
 
 void ui_Screen6_screen_init(void)
 {
     ui_Screen6 = lv_obj_create(NULL);
-    lv_obj_remove_flag(ui_Screen6, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
+    lv_obj_remove_flag(ui_Screen6, LV_OBJ_FLAG_SCROLLABLE); /// Flags
 
     ui_Image11 = lv_image_create(ui_Screen6);
     lv_image_set_src(ui_Image11, &ui_img_bg_png);
-    lv_obj_set_width(ui_Image11, LV_SIZE_CONTENT);   /// 800
-    lv_obj_set_height(ui_Image11, LV_SIZE_CONTENT);    /// 571
+    lv_obj_set_width(ui_Image11, LV_SIZE_CONTENT);  /// 800
+    lv_obj_set_height(ui_Image11, LV_SIZE_CONTENT); /// 571
     lv_obj_set_align(ui_Image11, LV_ALIGN_CENTER);
     lv_obj_add_flag(ui_Image11, LV_OBJ_FLAG_CLICKABLE);     /// Flags
-    lv_obj_remove_flag(ui_Image11, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
+    lv_obj_remove_flag(ui_Image11, LV_OBJ_FLAG_SCROLLABLE); /// Flags
 
     ui_Label33 = lv_label_create(ui_Screen6);
-    lv_obj_set_width(ui_Label33, LV_SIZE_CONTENT);   /// 1
-    lv_obj_set_height(ui_Label33, LV_SIZE_CONTENT);    /// 1
+    lv_obj_set_width(ui_Label33, LV_SIZE_CONTENT);  /// 1
+    lv_obj_set_height(ui_Label33, LV_SIZE_CONTENT); /// 1
     lv_obj_set_x(ui_Label33, -144);
     lv_obj_set_y(ui_Label33, -214);
     lv_obj_set_align(ui_Label33, LV_ALIGN_CENTER);
@@ -30,8 +32,8 @@ void ui_Screen6_screen_init(void)
     lv_obj_set_style_text_font(ui_Label33, &ui_font_chinese48title, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     ui_Label36 = lv_label_create(ui_Screen6);
-    lv_obj_set_width(ui_Label36, LV_SIZE_CONTENT);   /// 1
-    lv_obj_set_height(ui_Label36, LV_SIZE_CONTENT);    /// 1
+    lv_obj_set_width(ui_Label36, LV_SIZE_CONTENT);  /// 1
+    lv_obj_set_height(ui_Label36, LV_SIZE_CONTENT); /// 1
     lv_obj_set_x(ui_Label36, -228);
     lv_obj_set_y(ui_Label36, -139);
     lv_obj_set_align(ui_Label36, LV_ALIGN_CENTER);
@@ -41,8 +43,8 @@ void ui_Screen6_screen_init(void)
     lv_obj_set_style_text_font(ui_Label36, &ui_font_chinese48title, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     ui_Label37 = lv_label_create(ui_Screen6);
-    lv_obj_set_width(ui_Label37, LV_SIZE_CONTENT);   /// 1
-    lv_obj_set_height(ui_Label37, LV_SIZE_CONTENT);    /// 1
+    lv_obj_set_width(ui_Label37, LV_SIZE_CONTENT);  /// 1
+    lv_obj_set_height(ui_Label37, LV_SIZE_CONTENT); /// 1
     lv_obj_set_x(ui_Label37, -245);
     lv_obj_set_y(ui_Label37, -70);
     lv_obj_set_align(ui_Label37, LV_ALIGN_CENTER);
@@ -52,8 +54,8 @@ void ui_Screen6_screen_init(void)
     lv_obj_set_style_text_font(ui_Label37, &ui_font_chinese48title, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     ui_Label38 = lv_label_create(ui_Screen6);
-    lv_obj_set_width(ui_Label38, LV_SIZE_CONTENT);   /// 1
-    lv_obj_set_height(ui_Label38, LV_SIZE_CONTENT);    /// 1
+    lv_obj_set_width(ui_Label38, LV_SIZE_CONTENT);  /// 1
+    lv_obj_set_height(ui_Label38, LV_SIZE_CONTENT); /// 1
     lv_obj_set_x(ui_Label38, -242);
     lv_obj_set_y(ui_Label38, 4);
     lv_obj_set_align(ui_Label38, LV_ALIGN_CENTER);
@@ -79,12 +81,12 @@ void ui_Screen6_screen_init(void)
     lv_obj_set_style_shadow_offset_x(ui_Bar1, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_shadow_offset_y(ui_Bar1, 10, LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    //Compensating for LVGL9.1 draw crash with bar/slider max value when top-padding is nonzero and right-padding is 0
-    if(lv_obj_get_style_pad_top(ui_Bar1, LV_PART_MAIN) > 0) lv_obj_set_style_pad_right(ui_Bar1,
-                                                                                           lv_obj_get_style_pad_right(ui_Bar1, LV_PART_MAIN) + 1, LV_PART_MAIN);
+    // Compensating for LVGL9.1 draw crash with bar/slider max value when top-padding is nonzero and right-padding is 0
+    if(lv_obj_get_style_pad_top(ui_Bar1, LV_PART_MAIN) > 0)
+        lv_obj_set_style_pad_right(ui_Bar1, lv_obj_get_style_pad_right(ui_Bar1, LV_PART_MAIN) + 1, LV_PART_MAIN);
     ui_Label39 = lv_label_create(ui_Bar1);
-    lv_obj_set_width(ui_Label39, LV_SIZE_CONTENT);   /// 1
-    lv_obj_set_height(ui_Label39, LV_SIZE_CONTENT);    /// 1
+    lv_obj_set_width(ui_Label39, LV_SIZE_CONTENT);  /// 1
+    lv_obj_set_height(ui_Label39, LV_SIZE_CONTENT); /// 1
     lv_obj_set_align(ui_Label39, LV_ALIGN_CENTER);
     lv_label_set_text(ui_Label39, "当前进度 :00.0%");
     lv_obj_set_style_text_color(ui_Label39, lv_color_hex(0x00FF80), LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -97,8 +99,8 @@ void ui_Screen6_screen_init(void)
     lv_obj_set_x(ui_Button22, 246);
     lv_obj_set_y(ui_Button22, 97);
     lv_obj_set_align(ui_Button22, LV_ALIGN_CENTER);
-    lv_obj_add_flag(ui_Button22, LV_OBJ_FLAG_SCROLL_ON_FOCUS);     /// Flags
-    lv_obj_remove_flag(ui_Button22, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
+    lv_obj_add_flag(ui_Button22, LV_OBJ_FLAG_SCROLL_ON_FOCUS); /// Flags
+    lv_obj_remove_flag(ui_Button22, LV_OBJ_FLAG_SCROLLABLE);   /// Flags
     lv_obj_set_style_radius(ui_Button22, 12, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_color(ui_Button22, lv_color_hex(0xC91818), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(ui_Button22, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -114,8 +116,8 @@ void ui_Screen6_screen_init(void)
     lv_obj_set_style_pad_bottom(ui_Button22, 10, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     ui_Label42 = lv_label_create(ui_Button22);
-    lv_obj_set_width(ui_Label42, LV_SIZE_CONTENT);   /// 1
-    lv_obj_set_height(ui_Label42, LV_SIZE_CONTENT);    /// 1
+    lv_obj_set_width(ui_Label42, LV_SIZE_CONTENT);  /// 1
+    lv_obj_set_height(ui_Label42, LV_SIZE_CONTENT); /// 1
     lv_obj_set_align(ui_Label42, LV_ALIGN_CENTER);
     lv_label_set_text(ui_Label42, "停止充电");
     lv_obj_set_style_text_color(ui_Label42, lv_color_hex(0x4D1919), LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -123,8 +125,8 @@ void ui_Screen6_screen_init(void)
     lv_obj_set_style_text_font(ui_Label42, &ui_font_chinese48title, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     ui_Label40 = lv_label_create(ui_Screen6);
-    lv_obj_set_width(ui_Label40, LV_SIZE_CONTENT);   /// 1
-    lv_obj_set_height(ui_Label40, LV_SIZE_CONTENT);    /// 1
+    lv_obj_set_width(ui_Label40, LV_SIZE_CONTENT);  /// 1
+    lv_obj_set_height(ui_Label40, LV_SIZE_CONTENT); /// 1
     lv_obj_set_x(ui_Label40, 162);
     lv_obj_set_y(ui_Label40, -140);
     lv_obj_set_align(ui_Label40, LV_ALIGN_CENTER);
@@ -134,8 +136,8 @@ void ui_Screen6_screen_init(void)
     lv_obj_set_style_text_font(ui_Label40, &ui_font_chinese48title, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     ui_Label41 = lv_label_create(ui_Screen6);
-    lv_obj_set_width(ui_Label41, LV_SIZE_CONTENT);   /// 1
-    lv_obj_set_height(ui_Label41, LV_SIZE_CONTENT);    /// 1
+    lv_obj_set_width(ui_Label41, LV_SIZE_CONTENT);  /// 1
+    lv_obj_set_height(ui_Label41, LV_SIZE_CONTENT); /// 1
     lv_obj_set_x(ui_Label41, 187);
     lv_obj_set_y(ui_Label41, -74);
     lv_obj_set_align(ui_Label41, LV_ALIGN_CENTER);
@@ -145,8 +147,8 @@ void ui_Screen6_screen_init(void)
     lv_obj_set_style_text_font(ui_Label41, &ui_font_chinese48title, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     ui_Label43 = lv_label_create(ui_Screen6);
-    lv_obj_set_width(ui_Label43, LV_SIZE_CONTENT);   /// 1
-    lv_obj_set_height(ui_Label43, LV_SIZE_CONTENT);    /// 1
+    lv_obj_set_width(ui_Label43, LV_SIZE_CONTENT);  /// 1
+    lv_obj_set_height(ui_Label43, LV_SIZE_CONTENT); /// 1
     lv_obj_set_x(ui_Label43, 167);
     lv_obj_set_y(ui_Label43, 0);
     lv_obj_set_align(ui_Label43, LV_ALIGN_CENTER);
@@ -157,4 +159,63 @@ void ui_Screen6_screen_init(void)
 
     lv_obj_add_event_cb(ui_Button22, ui_event_Button22, LV_EVENT_ALL, NULL);
 
+    // 初始化时更新一次显示
+    update_charging_display();
+}
+
+// 更新充电界面显示
+void update_charging_display(void)
+{
+    const charging_data_t * charging = get_charging_data();
+    if(!charging) {
+        printf("错误: 无法获取充电数据\n");
+        return;
+    }
+
+    printf("更新充电显示: 状态=%d, 模式=%d, 功率=%.1f\n", charging->state, charging->mode, charging->power);
+
+    // 更新充电数据（模拟实时更新）
+    update_charging_data();
+    charging = get_charging_data(); // 重新获取更新后的数据
+
+    char buffer[128];
+
+    // 1. 更新当前模式显示 (ui_Label33)
+    snprintf(buffer, sizeof(buffer), "充电中...当前模式:%s", get_charging_mode_string(charging->mode));
+    lv_label_set_text(ui_Label33, buffer);
+
+    // 2. 更新功率显示 (ui_Label36)
+    snprintf(buffer, sizeof(buffer), "功率:%.1fkW", charging->power);
+    lv_label_set_text(ui_Label36, buffer);
+
+    // 3. 更新电压显示 (ui_Label37)
+    snprintf(buffer, sizeof(buffer), "电压:%.1fV", charging->voltage);
+    lv_label_set_text(ui_Label37, buffer);
+
+    // 4. 更新电流显示 (ui_Label38)
+    snprintf(buffer, sizeof(buffer), "电流:%.1fA", charging->current);
+    lv_label_set_text(ui_Label38, buffer);
+
+    // 5. 更新充电时长显示 (ui_Label40)
+    char duration_str[32];
+    get_charging_duration_string(duration_str, sizeof(duration_str));
+    snprintf(buffer, sizeof(buffer), "充电时长: %s", duration_str);
+    lv_label_set_text(ui_Label40, buffer);
+
+    // 6. 更新已充入电量显示 (ui_Label41)
+    snprintf(buffer, sizeof(buffer), "已充入: %.1fkWh", charging->energy_charged);
+    lv_label_set_text(ui_Label41, buffer);
+
+    // 7. 更新电费显示 (ui_Label43)
+    snprintf(buffer, sizeof(buffer), "电费:%.2f元", charging->total_cost);
+    lv_label_set_text(ui_Label43, buffer);
+
+    // 8. 更新进度条和进度文字 (ui_Bar1, ui_Label39)
+    int progress = (int)charging->progress_percent;
+    if(progress > 100) progress = 100;
+    if(progress < 0) progress = 0;
+
+    lv_bar_set_value(ui_Bar1, progress, LV_ANIM_OFF);
+    snprintf(buffer, sizeof(buffer), "当前进度 :%.1f%%", charging->progress_percent);
+    lv_label_set_text(ui_Label39, buffer);
 }

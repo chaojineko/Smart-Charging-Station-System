@@ -114,9 +114,11 @@ extern lv_obj_t * ui_Label69;
 
 // SCREEN: ui_Screen5 用户选择界面
 void ui_Screen5_screen_init(void);
+void update_balance_display(void); // 更新余额显示函数
 extern lv_obj_t * ui_Screen5;
 extern lv_obj_t * ui_Image8;
 extern lv_obj_t * ui_Label9;
+// 余额查询按钮
 void ui_event_Button5(lv_event_t * e);
 extern lv_obj_t * ui_Button5;
 extern lv_obj_t * ui_Label16;
@@ -184,8 +186,12 @@ extern lv_obj_t * ui_Label40;
 extern lv_obj_t * ui_Label41;
 extern lv_obj_t * ui_Label43;
 
+// Screen6 charging update function
+void update_charging_display(void);
+
 // SCREEN: ui_Screen7 结算界面
 void ui_Screen7_screen_init(void);
+void update_billing_summary(void);
 extern lv_obj_t * ui_Screen7;
 extern lv_obj_t * ui_Image12;
 extern lv_obj_t * ui_Label44;

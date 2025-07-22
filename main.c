@@ -10,6 +10,8 @@
 #include "ui/ui.h"
 // 添加用户认证头文件
 #include "src/user_auth.h"
+// 添加充电系统头文件
+#include "src/charging_system.h"
 
 #ifndef PATH_PREFIX
 #define PATH_PREFIX "./"
@@ -18,6 +20,28 @@
 static const char * getenv_default(const char * name, const char * dflt)
 {
     return getenv(name) ?: dflt;
+}
+
+// 充电显示更新定时器回调函数
+static void charging_timer_cb(lv_timer_t * timer)
+{
+    // 检查当前是否在Screen6界面并且正在充电
+    extern lv_obj_t * ui_Screen6;
+    extern lv_obj_t * ui_Screen7;
+
+    if(lv_screen_active() == ui_Screen6) {
+        const charging_data_t * charging = get_charging_data();
+        if(charging && charging->state == CHARGING_STATE_CHARGING) {
+            update_charging_display();
+        }
+    }
+    // 检查当前是否在Screen7界面，更新计费显示
+    else if(lv_screen_active() == ui_Screen7) {
+        const charging_data_t * charging = get_charging_data();
+        if(charging) {
+            update_billing_summary();
+        }
+    }
 }
 
 #if LV_USE_LINUX_FBDEV
@@ -67,8 +91,14 @@ int main(void)
         return -1;
     }
 
+    // 初始化充电系统
+    charging_system_init();
+
     // 初始化UI界面
     ui_init();
+
+    // 创建定时器用于更新充电显示
+    lv_timer_t * charging_timer = lv_timer_create(charging_timer_cb, 1000, NULL); // 每1秒更新一次
 
     /*Handle LVGL tasks*/
     while(1) {
