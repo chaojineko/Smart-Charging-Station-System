@@ -23,7 +23,7 @@ extern lv_obj_t * ui_Screen1;
 extern lv_obj_t * ui_Image1;
 extern lv_obj_t * ui_Image2;
 extern lv_obj_t * ui_Label1;
-void ui_event_Button2(lv_event_t * e);
+void ui_event_Button2(lv_event_t * e); // 开始充电的按钮
 extern lv_obj_t * ui_Button2;
 extern lv_obj_t * ui_Label2;
 extern lv_obj_t * ui_Image15;
@@ -32,7 +32,7 @@ extern lv_obj_t * ui_Image13;
 extern lv_obj_t * ui_Label45;
 extern lv_obj_t * ui_Container7;
 extern lv_obj_t * ui_Label50;
-void ui_event_Button23(lv_event_t * e);
+void ui_event_Button23(lv_event_t * e); // 主界面价格的返回
 extern lv_obj_t * ui_Button23;
 extern lv_obj_t * ui_Label51;
 
@@ -43,13 +43,13 @@ extern lv_obj_t * ui_Image5;
 extern lv_obj_t * ui_Label3;
 extern lv_obj_t * ui_Label4;
 extern lv_obj_t * ui_Label5;
-void ui_event_Button3(lv_event_t * e);
+void ui_event_Button3(lv_event_t * e); // 商家按钮
 extern lv_obj_t * ui_Button3;
 extern lv_obj_t * ui_Image3;
-void ui_event_Button4(lv_event_t * e);
+void ui_event_Button4(lv_event_t * e); // 用户按钮
 extern lv_obj_t * ui_Button4;
 extern lv_obj_t * ui_Image4;
-void ui_event_Button8(lv_event_t * e);
+void ui_event_Button8(lv_event_t * e); // home 按钮
 extern lv_obj_t * ui_Button8;
 extern lv_obj_t * ui_Image14;
 
@@ -57,25 +57,25 @@ extern lv_obj_t * ui_Image14;
 void ui_Screen3_screen_init(void);
 extern lv_obj_t * ui_Screen3;
 extern lv_obj_t * ui_Image6;
-void ui_event_TextArea1(lv_event_t * e);
+void ui_event_TextArea1(lv_event_t * e); // 账号文本框
 extern lv_obj_t * ui_TextArea1;
-void ui_event_TextArea2(lv_event_t * e);
+void ui_event_TextArea2(lv_event_t * e); // 密码文本框
 extern lv_obj_t * ui_TextArea2;
 extern lv_obj_t * ui_Label6;
 extern lv_obj_t * ui_Label7;
-void ui_event_Button1(lv_event_t * e);
+void ui_event_Button1(lv_event_t * e); // 没有账号文本框
 extern lv_obj_t * ui_Button1;
 extern lv_obj_t * ui_Label8;
-void ui_event_Button6(lv_event_t * e);
+void ui_event_Button6(lv_event_t * e); // 登陆按钮下一步
 extern lv_obj_t * ui_Button6;
 extern lv_obj_t * ui_Label10;
 extern lv_obj_t * ui_Image17;
-void ui_event_Button9(lv_event_t * e);
+void ui_event_Button9(lv_event_t * e); // home按钮
 extern lv_obj_t * ui_Button9;
 extern lv_obj_t * ui_Image16;
 extern lv_obj_t * ui_Container3;
 extern lv_obj_t * ui_Label23;
-void ui_event_Button16(lv_event_t * e);
+void ui_event_Button16(lv_event_t * e); // 密码错误的返回按钮
 extern lv_obj_t * ui_Button16;
 extern lv_obj_t * ui_Label26;
 extern lv_obj_t * ui_Keyboard1;
@@ -84,22 +84,22 @@ extern lv_obj_t * ui_Keyboard1;
 void ui_Screen4_screen_init(void);
 extern lv_obj_t * ui_Screen4;
 extern lv_obj_t * ui_Image7;
-void ui_event_TextArea4(lv_event_t * e);
+void ui_event_TextArea4(lv_event_t * e); // 创建账号文本框密码要11位
 extern lv_obj_t * ui_TextArea4;
-void ui_event_TextArea5(lv_event_t * e);
+void ui_event_TextArea5(lv_event_t * e); // 创建密码文本框
 extern lv_obj_t * ui_TextArea5;
 extern lv_obj_t * ui_Label11;
 extern lv_obj_t * ui_Label12;
-void ui_event_Button7(lv_event_t * e);
+void ui_event_Button7(lv_event_t * e); // 创建账号返回上一步按钮
 extern lv_obj_t * ui_Button7;
 extern lv_obj_t * ui_Label13;
 extern lv_obj_t * ui_Keyboard3;
-void ui_event_Button32(lv_event_t * e);
+void ui_event_Button32(lv_event_t * e); // 注册按钮
 extern lv_obj_t * ui_Button32;
 extern lv_obj_t * ui_Label66;
 extern lv_obj_t * ui_Container13;
 extern lv_obj_t * ui_Label68;
-void ui_event_Button37(lv_event_t * e);
+void ui_event_Button37(lv_event_t * e); // 注册成功页面的上一步
 extern lv_obj_t * ui_Button37;
 extern lv_obj_t * ui_Label69;
 
