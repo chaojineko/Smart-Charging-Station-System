@@ -43,13 +43,16 @@ extern lv_obj_t * ui_Image5;
 extern lv_obj_t * ui_Label3;
 extern lv_obj_t * ui_Label4;
 extern lv_obj_t * ui_Label5;
-void ui_event_Button3(lv_event_t * e); // 商家按钮
+// 商家按钮
+void ui_event_Button3(lv_event_t * e);
 extern lv_obj_t * ui_Button3;
 extern lv_obj_t * ui_Image3;
-void ui_event_Button4(lv_event_t * e); // 用户按钮
+// 用户按钮
+void ui_event_Button4(lv_event_t * e);
 extern lv_obj_t * ui_Button4;
 extern lv_obj_t * ui_Image4;
-void ui_event_Button8(lv_event_t * e); // home 按钮
+// home 按钮
+void ui_event_Button8(lv_event_t * e);
 extern lv_obj_t * ui_Button8;
 extern lv_obj_t * ui_Image14;
 
@@ -57,25 +60,31 @@ extern lv_obj_t * ui_Image14;
 void ui_Screen3_screen_init(void);
 extern lv_obj_t * ui_Screen3;
 extern lv_obj_t * ui_Image6;
-void ui_event_TextArea1(lv_event_t * e); // 账号文本框
+// 账号文本框
+void ui_event_TextArea1(lv_event_t * e);
 extern lv_obj_t * ui_TextArea1;
-void ui_event_TextArea2(lv_event_t * e); // 密码文本框
+// 密码文本框
+void ui_event_TextArea2(lv_event_t * e);
 extern lv_obj_t * ui_TextArea2;
 extern lv_obj_t * ui_Label6;
 extern lv_obj_t * ui_Label7;
-void ui_event_Button1(lv_event_t * e); // 没有账号文本框
+// 没有账号文本框?注册账号
+void ui_event_Button1(lv_event_t * e);
 extern lv_obj_t * ui_Button1;
 extern lv_obj_t * ui_Label8;
-void ui_event_Button6(lv_event_t * e); // 登陆按钮下一步
+// 登陆按钮下一步
+void ui_event_Button6(lv_event_t * e);
 extern lv_obj_t * ui_Button6;
 extern lv_obj_t * ui_Label10;
 extern lv_obj_t * ui_Image17;
-void ui_event_Button9(lv_event_t * e); // home按钮
+// home按钮
+void ui_event_Button9(lv_event_t * e);
 extern lv_obj_t * ui_Button9;
 extern lv_obj_t * ui_Image16;
 extern lv_obj_t * ui_Container3;
 extern lv_obj_t * ui_Label23;
-void ui_event_Button16(lv_event_t * e); // 密码错误的返回按钮
+// 密码错误的返回按钮
+void ui_event_Button16(lv_event_t * e);
 extern lv_obj_t * ui_Button16;
 extern lv_obj_t * ui_Label26;
 extern lv_obj_t * ui_Keyboard1;

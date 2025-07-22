@@ -5,6 +5,8 @@
 
 #include "ui.h"
 #include "ui_helpers.h"
+#include "../src/user_auth.h"
+#include <stdio.h>
 
 ///////////////////// VARIABLES ////////////////////
 
@@ -34,12 +36,15 @@ lv_obj_t * ui_Image5;
 lv_obj_t * ui_Label3;
 lv_obj_t * ui_Label4;
 lv_obj_t * ui_Label5;
+// S2选择页面的商家按钮
 void ui_event_Button3(lv_event_t * e);
 lv_obj_t * ui_Button3;
 lv_obj_t * ui_Image3;
+// S2选择页面的用户按钮
 void ui_event_Button4(lv_event_t * e);
 lv_obj_t * ui_Button4;
 lv_obj_t * ui_Image4;
+// home按钮
 void ui_event_Button8(lv_event_t * e);
 lv_obj_t * ui_Button8;
 lv_obj_t * ui_Image14;
@@ -328,18 +333,20 @@ void ui_event_Button8(lv_event_t * e)
         _ui_screen_change(&ui_Screen1, LV_SCR_LOAD_ANIM_FADE_ON, 500, 0, &ui_Screen1_screen_init);
     }
 }
+// 登陆账号的文本框
 void ui_event_TextArea1(lv_event_t * e)
 {
-    lv_event_code_t event_code = lv_event_get_code(e);
-    lv_obj_t * target          = lv_event_get_target(e);
-    if(event_code == LV_EVENT_FOCUSED) {
-        _ui_flag_modify(ui_Keyboard1, LV_OBJ_FLAG_HIDDEN, _UI_MODIFY_FLAG_REMOVE);
-        _ui_keyboard_set_target(ui_Keyboard1, ui_TextArea1);
+    lv_event_code_t event_code = lv_event_get_code(e);                             // 获取事件代码
+    lv_obj_t * target          = lv_event_get_target(e);                           // 获取事件目标对象
+    if(event_code == LV_EVENT_FOCUSED) {                                           // 如果事件是获得焦点
+        _ui_flag_modify(ui_Keyboard1, LV_OBJ_FLAG_HIDDEN, _UI_MODIFY_FLAG_REMOVE); // 移除键盘的隐藏标志
+        _ui_keyboard_set_target(ui_Keyboard1, ui_TextArea1);                       // 设置键盘的目标对象为账号文本框
     }
-    if(event_code == LV_EVENT_DEFOCUSED) {
-        _ui_flag_modify(ui_Keyboard1, LV_OBJ_FLAG_HIDDEN, _UI_MODIFY_FLAG_ADD);
+    if(event_code == LV_EVENT_DEFOCUSED) {                                      // 如果事件是失去焦点
+        _ui_flag_modify(ui_Keyboard1, LV_OBJ_FLAG_HIDDEN, _UI_MODIFY_FLAG_ADD); // 添加键盘的隐藏标志
     }
 }
+// 登陆密码的文本框
 void ui_event_TextArea2(lv_event_t * e)
 {
     lv_event_code_t event_code = lv_event_get_code(e);
@@ -365,7 +372,23 @@ void ui_event_Button6(lv_event_t * e)
     lv_event_code_t event_code = lv_event_get_code(e);
     lv_obj_t * target          = lv_event_get_target(e);
     if(event_code == LV_EVENT_CLICKED) {
-        _ui_screen_change(&ui_Screen5, LV_SCR_LOAD_ANIM_FADE_ON, 400, 0, &ui_Screen5_screen_init);
+        // 获取账号和密码
+        const char * username = lv_textarea_get_text(ui_TextArea1);
+        const char * password = lv_textarea_get_text(ui_TextArea2);
+
+        // 执行顾客登录验证
+        auth_result_t result = user_login(username, password, USER_TYPE_CUSTOMER);
+
+        if(result == AUTH_SUCCESS) {
+            // 登录成功，跳转到用户选择界面
+            _ui_screen_change(&ui_Screen5, LV_SCR_LOAD_ANIM_FADE_ON, 400, 0, &ui_Screen5_screen_init);
+        } else {
+            // 登录失败，显示错误弹窗
+            const char * error_msg = auth_result_to_string(result);
+            lv_label_set_text(ui_Label23, error_msg);
+            _ui_flag_modify(ui_Container3, LV_OBJ_FLAG_HIDDEN, _UI_MODIFY_FLAG_REMOVE);
+            printf("顾客登录失败: %s\n", error_msg);
+        }
     }
 }
 void ui_event_Button9(lv_event_t * e)
@@ -429,8 +452,32 @@ void ui_event_Button37(lv_event_t * e)
     lv_event_code_t event_code = lv_event_get_code(e);
     lv_obj_t * target          = lv_event_get_target(e);
     if(event_code == LV_EVENT_CLICKED) {
-        _ui_flag_modify(ui_Container13, LV_OBJ_FLAG_HIDDEN, _UI_MODIFY_FLAG_ADD);
-        _ui_screen_change(&ui_Screen3, LV_SCR_LOAD_ANIM_FADE_ON, 500, 0, &ui_Screen3_screen_init);
+        // 获取注册的账号和密码
+        const char * username = lv_textarea_get_text(ui_TextArea4);
+        const char * password = lv_textarea_get_text(ui_TextArea5);
+
+        // 检查输入是否为空
+        if(!username || !password || strlen(username) == 0 || strlen(password) == 0) {
+            lv_label_set_text(ui_Label68, "请输入账号和密码!");
+            _ui_flag_modify(ui_Container13, LV_OBJ_FLAG_HIDDEN, _UI_MODIFY_FLAG_REMOVE);
+            printf("注册失败: 账号或密码为空\n");
+            return;
+        }
+
+        // 执行顾客注册
+        bool success = user_register(username, password, USER_TYPE_CUSTOMER);
+
+        if(success) {
+            // 注册成功
+            lv_label_set_text(ui_Label68, "注册成功!");
+            _ui_flag_modify(ui_Container13, LV_OBJ_FLAG_HIDDEN, _UI_MODIFY_FLAG_REMOVE);
+            printf("顾客注册成功: %s\n", username);
+        } else {
+            // 注册失败
+            lv_label_set_text(ui_Label68, "用户名已存在!");
+            _ui_flag_modify(ui_Container13, LV_OBJ_FLAG_HIDDEN, _UI_MODIFY_FLAG_REMOVE);
+            printf("顾客注册失败: 用户名已存在\n");
+        }
     }
 }
 void ui_event_Button5(lv_event_t * e)
@@ -683,7 +730,23 @@ void ui_event_Button36(lv_event_t * e)
     lv_event_code_t event_code = lv_event_get_code(e);
     lv_obj_t * target          = lv_event_get_target(e);
     if(event_code == LV_EVENT_CLICKED) {
-        _ui_screen_change(&ui_Screen11, LV_SCR_LOAD_ANIM_FADE_ON, 400, 0, &ui_Screen11_screen_init);
+        // 获取商家账号和密码
+        const char * username = lv_textarea_get_text(ui_TextArea6);
+        const char * password = lv_textarea_get_text(ui_TextArea7);
+
+        // 执行商家登录验证
+        auth_result_t result = user_login(username, password, USER_TYPE_MERCHANT);
+
+        if(result == AUTH_SUCCESS) {
+            // 登录成功，跳转到商家操作界面
+            _ui_screen_change(&ui_Screen11, LV_SCR_LOAD_ANIM_FADE_ON, 400, 0, &ui_Screen11_screen_init);
+            printf("商家登录成功: %s\n", username);
+        } else {
+            // 登录失败，显示错误提示（目前在控制台输出，你可以在UI中添加弹窗）
+            const char * error_msg = auth_result_to_string(result);
+            printf("商家登录失败: %s\n", error_msg);
+            // 如果你在商家登录界面添加了错误弹窗，可以在这里显示
+        }
     }
 }
 void ui_event_Button38(lv_event_t * e)

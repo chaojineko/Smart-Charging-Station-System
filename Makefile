@@ -28,6 +28,7 @@ include $(LVGL_DIR)/lvgl/lvgl.mk
 
 CSRCS 			+=$(LVGL_DIR)/mouse_cursor_icon.c
 CSRCS += $(shell find ./ui -type f -name '*.c')
+CSRCS += $(shell find ./src -type f -name '*.c')
 
 
 OBJEXT 			?= .o

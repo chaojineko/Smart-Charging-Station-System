@@ -8,6 +8,8 @@
 
 // 添加UI头文件
 #include "ui/ui.h"
+// 添加用户认证头文件
+#include "src/user_auth.h"
 
 #ifndef PATH_PREFIX
 #define PATH_PREFIX "./"
@@ -58,6 +60,12 @@ int main(void)
     lv_evdev_set_calibration(touch, 0, 0, 1024, 600); // 黑色边框的屏幕
     // lv_evdev_set_calibration(touch, 0, 0, 800, 480);  // 蓝色边框的屏幕
 #endif
+
+    // 初始化用户认证系统
+    if(!user_auth_init()) {
+        printf("用户认证系统初始化失败!\n");
+        return -1;
+    }
 
     // 初始化UI界面
     ui_init();
