@@ -281,6 +281,7 @@ extern lv_obj_t * ui_Keyboard4;
 
 // SCREEN: ui_Screen11 请在控制台操作界面
 void ui_Screen11_screen_init(void);
+void ui_Screen11_cleanup(void);
 extern lv_obj_t * ui_Screen11;
 extern lv_obj_t * ui_Image32;
 extern lv_obj_t * ui_Label70;

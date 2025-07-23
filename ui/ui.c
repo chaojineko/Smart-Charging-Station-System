@@ -855,6 +855,8 @@ void ui_event_Button38(lv_event_t * e)
     lv_event_code_t event_code = lv_event_get_code(e);
     lv_obj_t * target          = lv_event_get_target(e);
     if(event_code == LV_EVENT_CLICKED) {
+        // 清理Screen11资源
+        ui_Screen11_cleanup();
         _ui_screen_change(&ui_Screen1, LV_SCR_LOAD_ANIM_FADE_ON, 500, 0, &ui_Screen1_screen_init);
     }
 }

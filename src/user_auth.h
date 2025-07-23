@@ -130,4 +130,13 @@ bool user_add_balance(const char * username, user_type_t type, double amount);
  */
 bool user_deduct_balance(const char * username, user_type_t type, double amount);
 
+/**
+ * @brief 获取所有用户信息（商家管理功能）
+ * @param type 用户类型
+ * @param users 用户信息数组
+ * @param max_users 最大用户数量
+ * @return 实际获取的用户数量
+ */
+int get_all_users(user_type_t type, user_info_t users[], int max_users);
+
 #endif // USER_AUTH_H

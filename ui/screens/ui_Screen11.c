@@ -4,28 +4,38 @@
 // Project name: SquareLine_Project
 
 #include "../ui.h"
+#include "../../src/merchant_console.h"
+
+static lv_timer_t * console_timer = NULL;
+
+// 控制台定时器回调
+static void console_timer_cb(lv_timer_t * timer)
+{
+    (void)timer;
+    merchant_console_process();
+}
 
 void ui_Screen11_screen_init(void)
 {
     ui_Screen11 = lv_obj_create(NULL);
-    lv_obj_remove_flag(ui_Screen11, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
+    lv_obj_remove_flag(ui_Screen11, LV_OBJ_FLAG_SCROLLABLE); /// Flags
 
     ui_Image32 = lv_image_create(ui_Screen11);
     lv_image_set_src(ui_Image32, &ui_img_bg_png);
-    lv_obj_set_width(ui_Image32, LV_SIZE_CONTENT);   /// 800
-    lv_obj_set_height(ui_Image32, LV_SIZE_CONTENT);    /// 571
+    lv_obj_set_width(ui_Image32, LV_SIZE_CONTENT);  /// 800
+    lv_obj_set_height(ui_Image32, LV_SIZE_CONTENT); /// 571
     lv_obj_set_align(ui_Image32, LV_ALIGN_CENTER);
     lv_obj_add_flag(ui_Image32, LV_OBJ_FLAG_CLICKABLE);     /// Flags
-    lv_obj_remove_flag(ui_Image32, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
+    lv_obj_remove_flag(ui_Image32, LV_OBJ_FLAG_SCROLLABLE); /// Flags
 
     ui_Label70 = lv_label_create(ui_Screen11);
-    lv_obj_set_width(ui_Label70, LV_SIZE_CONTENT);   /// 1
-    lv_obj_set_height(ui_Label70, LV_SIZE_CONTENT);    /// 1
+    lv_obj_set_width(ui_Label70, LV_SIZE_CONTENT);  /// 1
+    lv_obj_set_height(ui_Label70, LV_SIZE_CONTENT); /// 1
     lv_obj_set_x(ui_Label70, -9);
     lv_obj_set_y(ui_Label70, -126);
     lv_obj_set_align(ui_Label70, LV_ALIGN_CENTER);
-    lv_label_set_text(ui_Label70, "请在控制台中操作...");
-    lv_obj_set_style_text_color(ui_Label70, lv_color_hex(0xFFFFFF), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_label_set_text(ui_Label70, "商家控制台已启动\n请在终端中输入命令操作");
+    lv_obj_set_style_text_color(ui_Label70, lv_color_hex(0x00FF00), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_opa(ui_Label70, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_font(ui_Label70, &ui_font_chinese48title, LV_PART_MAIN | LV_STATE_DEFAULT);
 
@@ -35,8 +45,8 @@ void ui_Screen11_screen_init(void)
     lv_obj_set_x(ui_Button38, -361);
     lv_obj_set_y(ui_Button38, -213);
     lv_obj_set_align(ui_Button38, LV_ALIGN_CENTER);
-    lv_obj_add_flag(ui_Button38, LV_OBJ_FLAG_SCROLL_ON_FOCUS);     /// Flags
-    lv_obj_remove_flag(ui_Button38, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
+    lv_obj_add_flag(ui_Button38, LV_OBJ_FLAG_SCROLL_ON_FOCUS); /// Flags
+    lv_obj_remove_flag(ui_Button38, LV_OBJ_FLAG_SCROLLABLE);   /// Flags
     lv_obj_set_style_radius(ui_Button38, 12, LV_PART_MAIN | LV_STATE_DEFAULT);
     ui_object_set_themeable_style_property(ui_Button38, LV_PART_MAIN | LV_STATE_DEFAULT, LV_STYLE_BG_COLOR,
                                            _ui_theme_color_color1);
@@ -57,12 +67,27 @@ void ui_Screen11_screen_init(void)
 
     ui_Image36 = lv_image_create(ui_Button38);
     lv_image_set_src(ui_Image36, &ui_img_home_png);
-    lv_obj_set_width(ui_Image36, LV_SIZE_CONTENT);   /// 1
-    lv_obj_set_height(ui_Image36, LV_SIZE_CONTENT);    /// 1
+    lv_obj_set_width(ui_Image36, LV_SIZE_CONTENT);  /// 1
+    lv_obj_set_height(ui_Image36, LV_SIZE_CONTENT); /// 1
     lv_obj_set_align(ui_Image36, LV_ALIGN_CENTER);
-    lv_obj_remove_flag(ui_Image36, LV_OBJ_FLAG_SCROLLABLE);      /// Flags
+    lv_obj_remove_flag(ui_Image36, LV_OBJ_FLAG_SCROLLABLE); /// Flags
     lv_image_set_scale(ui_Image36, 100);
 
     lv_obj_add_event_cb(ui_Button38, ui_event_Button38, LV_EVENT_ALL, NULL);
 
+    // 启动商家控制台
+    merchant_console_init();
+
+    // 创建控制台处理定时器（100ms检查一次）
+    console_timer = lv_timer_create(console_timer_cb, 100, NULL);
+}
+
+// 清理函数（当离开Screen11时调用）
+void ui_Screen11_cleanup(void)
+{
+    if(console_timer) {
+        lv_timer_delete(console_timer);
+        console_timer = NULL;
+    }
+    merchant_console_stop();
 }

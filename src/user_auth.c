@@ -345,3 +345,35 @@ bool refresh_current_user_balance(void)
     }
     return false;
 }
+
+// 获取所有用户信息（商家管理功能）
+int get_all_users(user_type_t type, user_info_t users[], int max_users)
+{
+    FILE * file = fopen(get_data_file(type), "r");
+    if(!file) return 0;
+
+    char line[128];
+    int count = 0;
+
+    while(fgets(line, sizeof(line), file) && count < max_users) {
+        // 移除行尾换行符
+        line[strcspn(line, "\n")] = 0;
+
+        char stored_username[32];
+        char stored_password[32];
+        double stored_balance;
+
+        if(sscanf(line, "%31[^:]:%31[^:]:%lf", stored_username, stored_password, &stored_balance) == 3) {
+            strncpy(users[count].username, stored_username, sizeof(users[count].username) - 1);
+            strncpy(users[count].password, stored_password, sizeof(users[count].password) - 1);
+            users[count].balance                                     = stored_balance;
+            users[count].type                                        = type;
+            users[count].username[sizeof(users[count].username) - 1] = '\0';
+            users[count].password[sizeof(users[count].password) - 1] = '\0';
+            count++;
+        }
+    }
+
+    fclose(file);
+    return count;
+}
