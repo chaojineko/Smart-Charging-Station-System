@@ -119,7 +119,7 @@ int main(void)
     // 初始化UI界面
     ui_init();
 
-    // 创建定时器用于更新充电显示
+    // 定时器用于更新充电显示
     lv_timer_t * charging_timer = lv_timer_create(charging_timer_cb, 1000, NULL); // 每1秒更新一次
 
     /*Handle LVGL tasks*/
