@@ -846,7 +846,6 @@ void ui_event_Button36(lv_event_t * e)
             // 登录失败，显示错误提示（目前在控制台输出，你可以在UI中添加弹窗）
             const char * error_msg = auth_result_to_string(result);
             printf("商家登录失败: %s\n", error_msg);
-            // 如果你在商家登录界面添加了错误弹窗，可以在这里显示
         }
     }
 }

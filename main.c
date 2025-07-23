@@ -79,10 +79,32 @@ int main(void)
 
 #if LV_USE_LINUX_FBDEV
     // 创建输入设备
+    printf("正在初始化触摸设备...\n");
     lv_indev_t * touch = lv_evdev_create(LV_INDEV_TYPE_POINTER, "/dev/input/event0");
-    // 校准输入设备屏幕坐标
-    lv_evdev_set_calibration(touch, 0, 0, 1024, 600); // 黑色边框的屏幕
-    // lv_evdev_set_calibration(touch, 0, 0, 800, 480);  // 蓝色边框的屏幕
+    if(touch == NULL) {
+        printf("警告: 无法打开 /dev/input/event0, 尝试 /dev/input/event1\n");
+        touch = lv_evdev_create(LV_INDEV_TYPE_POINTER, "/dev/input/event1");
+        if(touch == NULL) {
+            printf("警告: 无法打开 /dev/input/event1, 尝试 /dev/input/event2\n");
+            touch = lv_evdev_create(LV_INDEV_TYPE_POINTER, "/dev/input/event2");
+            if(touch == NULL) {
+                printf("错误: 无法找到触摸设备!\n");
+            } else {
+                printf("成功打开触摸设备: /dev/input/event2\n");
+            }
+        } else {
+            printf("成功打开触摸设备: /dev/input/event1\n");
+        }
+    } else {
+        printf("成功打开触摸设备: /dev/input/event0\n");
+    }
+
+    if(touch != NULL) {
+        // 校准输入设备屏幕坐标
+        // lv_evdev_set_calibration(touch, 0, 0, 1024, 600); // 黑色边框的屏幕
+        lv_evdev_set_calibration(touch, 0, 0, 800, 480); // 蓝色边框的屏幕
+        printf("触摸设备校准完成: 800x480\n");
+    }
 #endif
 
     // 初始化用户认证系统

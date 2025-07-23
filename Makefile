@@ -1,8 +1,8 @@
 #
 # Makefile
 #
-CC 				?= gcc
-#CC 				= arm-linux-gcc
+#CC 				?= gcc
+CC 				= arm-linux-gcc
 LVGL_DIR_NAME 	?= lvgl
 LVGL_DIR 		?= .
 
@@ -11,8 +11,8 @@ LVGL_DIR 		?= .
 					-Wsizeof-pointer-memaccess -Wno-format-nonliteral -Wno-cast-qual -Wunreachable-code -Wno-switch-default -Wreturn-type -Wmultichar -Wformat-security \
 					-Wno-ignored-qualifiers -Wno-error=pedantic -Wno-sign-compare -Wno-error=missing-prototypes -Wdouble-promotion -Wclobbered -Wdeprecated -Wempty-body \
 					-Wshift-negative-value -Wstack-usage=2048 -Wno-unused-value -std=gnu99
-CFLAGS 			?= -O3 -g0 -I$(LVGL_DIR)/ -I/usr/include/freetype2#/ $(WARNINGS)
-LDFLAGS 		?= -lm -L/usr/local/lib -lfreetype -lSDL2
+CFLAGS 			?= -O3 -g0 -I$(LVGL_DIR)/ #-I/usr/include/freetype2#/ $(WARNINGS)
+LDFLAGS 		?= -lm #-L/usr/local/lib #-lfreetype -lSDL2
 BIN 			= main
 BUILD_DIR 		= ./build
 BUILD_OBJ_DIR 	= $(BUILD_DIR)/obj

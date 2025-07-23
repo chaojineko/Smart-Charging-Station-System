@@ -1,1 +1,0 @@
-/usr/bin/c++ -g CMakeFiles/main.dir/main.c.o CMakeFiles/main.dir/mouse_cursor_icon.c.o -o /lv_port_linux/bin/main  lib/liblvgl.a lib/liblvgl_examples.a lib/liblvgl_demos.a lib/liblvgl_thorvg.a /usr/lib/x86_64-linux-gnu/libSDL2.so /usr/lib/x86_64-linux-gnu/libdrm.so -lm -lpthread lib/liblvgl.a 
