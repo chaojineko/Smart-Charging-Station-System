@@ -26,7 +26,7 @@ void ui_Screen6_screen_init(void)
     lv_obj_set_x(ui_Label33, -144);
     lv_obj_set_y(ui_Label33, -214);
     lv_obj_set_align(ui_Label33, LV_ALIGN_CENTER);
-    lv_label_set_text(ui_Label33, "充电中...当前模式:X充");
+    lv_label_set_text(ui_Label33, "充电中...当前模式:  充");
     lv_obj_set_style_text_color(ui_Label33, lv_color_hex(0xFFFFFF), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_opa(ui_Label33, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_font(ui_Label33, &ui_font_chinese48title, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -37,7 +37,7 @@ void ui_Screen6_screen_init(void)
     lv_obj_set_x(ui_Label36, -228);
     lv_obj_set_y(ui_Label36, -139);
     lv_obj_set_align(ui_Label36, LV_ALIGN_CENTER);
-    lv_label_set_text(ui_Label36, "功率:000.0kw");
+    lv_label_set_text(ui_Label36, "功率:    kw");
     lv_obj_set_style_text_color(ui_Label36, lv_color_hex(0x29FE5D), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_opa(ui_Label36, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_font(ui_Label36, &ui_font_chinese48title, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -48,7 +48,7 @@ void ui_Screen6_screen_init(void)
     lv_obj_set_x(ui_Label37, -245);
     lv_obj_set_y(ui_Label37, -70);
     lv_obj_set_align(ui_Label37, LV_ALIGN_CENTER);
-    lv_label_set_text(ui_Label37, "电压:000.0V");
+    lv_label_set_text(ui_Label37, "电压:    V");
     lv_obj_set_style_text_color(ui_Label37, lv_color_hex(0xF53636), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_opa(ui_Label37, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_font(ui_Label37, &ui_font_chinese48title, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -59,7 +59,7 @@ void ui_Screen6_screen_init(void)
     lv_obj_set_x(ui_Label38, -242);
     lv_obj_set_y(ui_Label38, 4);
     lv_obj_set_align(ui_Label38, LV_ALIGN_CENTER);
-    lv_label_set_text(ui_Label38, "电流:000.0A");
+    lv_label_set_text(ui_Label38, "电流:    A");
     lv_obj_set_style_text_color(ui_Label38, lv_color_hex(0x4437F5), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_opa(ui_Label38, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_font(ui_Label38, &ui_font_chinese48title, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -88,7 +88,7 @@ void ui_Screen6_screen_init(void)
     lv_obj_set_width(ui_Label39, LV_SIZE_CONTENT);  /// 1
     lv_obj_set_height(ui_Label39, LV_SIZE_CONTENT); /// 1
     lv_obj_set_align(ui_Label39, LV_ALIGN_CENTER);
-    lv_label_set_text(ui_Label39, "当前进度 :00.0%");
+    lv_label_set_text(ui_Label39, "当前进度 :   %");
     lv_obj_set_style_text_color(ui_Label39, lv_color_hex(0x00FF80), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_opa(ui_Label39, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_font(ui_Label39, &ui_font_chinese48title, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -130,7 +130,7 @@ void ui_Screen6_screen_init(void)
     lv_obj_set_x(ui_Label40, 162);
     lv_obj_set_y(ui_Label40, -140);
     lv_obj_set_align(ui_Label40, LV_ALIGN_CENTER);
-    lv_label_set_text(ui_Label40, "充电时长: 00:00:00");
+    lv_label_set_text(ui_Label40, "充电时长:");
     lv_obj_set_style_text_color(ui_Label40, lv_color_hex(0xFFC93B), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_opa(ui_Label40, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_font(ui_Label40, &ui_font_chinese48title, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -141,7 +141,7 @@ void ui_Screen6_screen_init(void)
     lv_obj_set_x(ui_Label41, 187);
     lv_obj_set_y(ui_Label41, -74);
     lv_obj_set_align(ui_Label41, LV_ALIGN_CENTER);
-    lv_label_set_text(ui_Label41, "已充入: 00.0kwH");
+    lv_label_set_text(ui_Label41, "已充入:    kwH");
     lv_obj_set_style_text_color(ui_Label41, lv_color_hex(0xFF1ED1), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_opa(ui_Label41, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_font(ui_Label41, &ui_font_chinese48title, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -152,7 +152,7 @@ void ui_Screen6_screen_init(void)
     lv_obj_set_x(ui_Label43, 167);
     lv_obj_set_y(ui_Label43, 0);
     lv_obj_set_align(ui_Label43, LV_ALIGN_CENTER);
-    lv_label_set_text(ui_Label43, "电费:00.00");
+    lv_label_set_text(ui_Label43, "电费:   ");
     lv_obj_set_style_text_color(ui_Label43, lv_color_hex(0x00D7FF), LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_opa(ui_Label43, 255, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_text_font(ui_Label43, &ui_font_chinese48title, LV_PART_MAIN | LV_STATE_DEFAULT);
