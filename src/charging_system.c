@@ -43,7 +43,7 @@ bool start_charging(charging_mode_t mode, const char * username)
     g_charging_data.state = CHARGING_STATE_CHARGING;
     strncpy(g_charging_data.username, username, sizeof(g_charging_data.username) - 1);
 
-    // 设置充电参数（根据模式）
+    // 设置充电参数
     if(mode == CHARGING_MODE_FAST) {
         g_charging_data.power   = 60.0;  // 快充60kW
         g_charging_data.voltage = 400.0; // 400V
@@ -76,7 +76,7 @@ bool stop_charging(void)
 
     g_charging_data.state = CHARGING_STATE_FINISHED;
 
-    // 注意：此处不进行扣费，扣费由用户在结算界面确认支付时执行
+    // 扣费由用户在结算界面确认支付时执行
     // 避免重复扣费问题
 
     return true;
