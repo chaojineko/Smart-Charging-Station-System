@@ -114,7 +114,7 @@ lv_port_linux/
 
 1. **克隆项目**
 ```bash
-git clone <repository-url>
+git clone git@gitee.com:chaojineko/test2.git
 cd lv_port_linux
 ```
 
@@ -157,7 +157,7 @@ chmod +x check_touch.sh
 2. **屏幕分辨率配置**
 - 在 `main.c` 中调整校准参数：
 ```c
-lv_evdev_set_calibration(touch, 0, 0, 800, 480); // 根据实际屏幕尺寸调整
+lv_evdev_set_calibration(touch, 0, 0, 800, 480); // 根据实际触摸屏尺寸调整
 ```
 
 3. **用户数据初始化**
@@ -201,16 +201,6 @@ lv_evdev_set_calibration(touch, 0, 0, 800, 480); // 根据实际屏幕尺寸调�
 - 使用 `printf` 添加调试信息
 - 检查系统日志: `dmesg | grep input`
 
-## 🤝 贡献指南
-
-欢迎提交Issue和Pull Request来改进项目！
-
-1. Fork本项目
-2. 创建特性分支 (`git checkout -b feature/AmazingFeature`)
-3. 提交更改 (`git commit -m 'Add some AmazingFeature'`)
-4. 推送到分支 (`git push origin feature/AmazingFeature`)
-5. 创建Pull Request
-
 ## 📄 许可证
 
 本项目基于MIT许可证开源 - 查看 [LICENSE](LICENSE) 文件了解详情。
@@ -220,81 +210,8 @@ lv_evdev_set_calibration(touch, 0, 0, 800, 480); // 根据实际屏幕尺寸调�
 - [LVGL](https://lvgl.io/) - 优秀的嵌入式图形库
 - [lv_port_linux](https://github.com/lvgl/lv_port_linux) - Linux移植基础框架
 
-## 📞 联系方式
-
-如有问题或建议，请通过以下方式联系：
-- 提交Issue: [GitHub Issues](https://github.com/your-repo/issues)
-
 ---
 
 ⭐ 如果这个项目对你有帮助，请给个Star支持一下！
 
-```
-mkdir build
-cd build 
-cmake ..
-make -j
-```
-
-### Makefile
-
-```
-make -j
-```
-
-## Environment variables
-
-Environment variables can be set to modify behavior of the demo.
-The following variables are supported.
-
-### Legacy framebuffer (fbdev)
-
-- `LV_LINUX_FBDEV_DEVICE` - override default (`/dev/fb0`) framebuffer device node.
-
-### DRM/KMS
-
-- `LV_LINUX_DRM_CARD` - override default (`/dev/dri/card0`) card.
-
-### SDL2
-
-- `LV_SDL_VIDEO_WIDTH` - width of SDL2 surface (default `800`).
-- `LV_SDL_VIDEO_HEIGHT` - height of SDL2 surface (default `480`).
-
-## Run the demo application
-
-### As root
-
-Normal users don't have access to `/dev/fb0` so use `sudo` (or see below) : 
-
-cmake:
-```
-cd ../bin
-sudo main
-```
-
-Makefile:
-```
-cd build/bin/
-sudo main
-```
-
-### Userland
-
-You can give a normal user access to the framebuffer by adding them to the `video` group : 
-
-
-cmake:
-```
-sudo adduser $USER video
-newgrp video
-cd ../bin
-./main
-```
-
-Makefile:
-```
-sudo adduser $USER video
-newgrp video
-cd build/bin/
-./main
 ```
