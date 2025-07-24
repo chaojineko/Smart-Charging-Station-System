@@ -540,6 +540,7 @@ void update_billing_summary(void)
     snprintf(cost_text, sizeof(cost_text), "电费:%.2f元", total_cost);
     lv_label_set_text(ui_Label48, cost_text);
 
+    // 调试输出
     printf("[DEBUG] Billing Summary - Duration: %s, Energy: %.1fkWh, Avg Power: %.1fkW, Cost: %.2f\n", duration_buffer,
            charging_data->energy_charged, avg_power, total_cost);
 }
