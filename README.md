@@ -201,10 +201,6 @@ lv_evdev_set_calibration(touch, 0, 0, 800, 480); // 根据实际触摸屏尺寸�
 - 使用 `printf` 添加调试信息
 - 检查系统日志: `dmesg | grep input`
 
-## 📄 许可证
-
-本项目基于MIT许可证开源 - 查看 [LICENSE](LICENSE) 文件了解详情。
-
 ## 🙏 致谢
 
 - [LVGL](https://lvgl.io/) - 优秀的嵌入式图形库
